@@ -18,7 +18,7 @@ function App() {
           loginOptions: {                 // optional, if provided opens login in new window
             autoClose: true,              // optional, defaults to `false`
             height: 600,                  // optional, defaults to 578
-            width: 400,                   // optional, defaults to 433
+            width: 350,                   // optional, defaults to 433
             top: 0,                       // optional, defaults to 0
             left: 0                       // optional, defaults to 0
           },
@@ -26,7 +26,7 @@ function App() {
           softphone: {                    // optional, defaults below apply if not provided
             allowFramedSoftphone: true,   // optional, defaults to false
             disableRingtone: false,       // optional, defaults to false
-            ringtoneUrl: "/dj_hi_hat_sample.mp3", // optional, defaults to CCP’s default ringtone if a falsy value is set
+            // ringtoneUrl: "/dj_hi_hat_sample.mp3", // optional, defaults to CCP’s default ringtone if a falsy value is set
             allowFramedVideoCall: true,    // optional, default to false
             allowEarlyGum: true    //optional, default to true
           },
@@ -64,7 +64,7 @@ function App() {
       <div
         id="container-div"
         ref={containerDiv}
-        style={{ width: "400px", height: "600px" }}
+        style={{ width: "350px", height: "600px" }}
       ></div>
     </div>
   );
