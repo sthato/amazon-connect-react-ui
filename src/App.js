@@ -22,7 +22,7 @@ function App() {
             top: 0,                       // optional, defaults to 0
             left: 0                       // optional, defaults to 0
           },
-          region: "eu-central-1",         // REQUIRED for `CHAT`, optional otherwise
+          region: "af-south-1",         // REQUIRED for `CHAT`, optional otherwise
           softphone: {                    // optional, defaults below apply if not provided
             allowFramedSoftphone: true,   // optional, defaults to false
             disableRingtone: false,       // optional, defaults to false
