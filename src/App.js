@@ -54,11 +54,10 @@ function App() {
         console.log("Loaded widget");
         widget = w;
         widget.on("customer_profile", (profile) => {
+          widget.putMessage("Hello, " + profile.name).then(() => {
+          });
+
           if (profile?.name === "Thato Shebe") {
-            
-            widget.putMessage("this text will be appended").then(() => {
-              return "YoYo"
-            });
 
             console.log("Modifying Section")
             widget
