@@ -4,12 +4,11 @@ import {
   createMessageBoxWidget,
   createFullscreenWidget,
 } from "@livechat/agent-app-sdk";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import "./App.css";
 
 function App() {
   const containerDiv = useRef();
-  const [widgetRef, setWidgetRef] = useState(null);
 
   useEffect(() => {
     console.log("Mounted");
@@ -54,7 +53,6 @@ function App() {
       createDetailsWidget().then((w) => {
         console.log("Loaded widget");
         widget = w;
-        setWidgetRef(widget);
         widget.on("customer_profile", (profile)=>{
           if (profile?.name === "Thato Shebe") {
             widget
