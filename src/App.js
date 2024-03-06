@@ -90,7 +90,7 @@ function App() {
             console.log("Modifying Section");
             widget
               .modifySection({
-                title: "Integrations data",
+                title: "Connect Actions",
                 components: [
                   {
                     type: "button",
