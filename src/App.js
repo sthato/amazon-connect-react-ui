@@ -48,18 +48,49 @@ function App() {
         ccpSynTimeout: 3000, //optional, defaults to 1000 (ms)
         ccpLoadTimeout: 10000, //optional, defaults to 5000 (ms)
       });
+
+      connect.core.onAuthFail(function () {
+        console.log("agent logged out or session expired.  needs login");
+      });
+
+      connect.core.onIframeRetriesExhausted(() => {
+        console.log("We have run out of retries to reload the CCP Iframe");
+      });
+
+      connect.core.onAuthorizeSuccess(() => {
+        console.log("authorization succeeded! Hooray");
+      });
+
+      connect.core.onCTIAuthorizeRetriesExhausted(() => {
+        console.log(
+          "We have failed CTI API authorization multiple times and we are out of retries"
+        );
+      });
+
+      connect.core.onAuthorizeRetriesExhausted(() => {
+        console.log(
+          "We have failed the agent authorization api multiple times and we are out of retries"
+        );
+      });
+
+      // connect.agent.onStateChange(function (agentStateChange) {
+      //   console.log("agent state changed", agentStateChange);
+      // });
+
+      // connect.agent.onError(function (agent) {
+      //   console.log("Agent error", agent);
+      // });
+
       console.log("Loading widget");
 
       createDetailsWidget().then((w) => {
         console.log("Loaded widget");
         widget = w;
         widget.on("customer_profile", (profile) => {
-          widget.putMessage("Hello, " + profile.name).then(() => {
-          });
+          widget.putMessage("Hello, " + profile.name).then(() => {});
 
           if (profile?.name === "Thato Shebe") {
-
-            console.log("Modifying Section")
+            console.log("Modifying Section");
             widget
               .modifySection({
                 title: "Integrations data",
@@ -78,30 +109,28 @@ function App() {
                 console.log("Section Updated");
               });
 
-              widget
-              .modifySection({
-                title: "Amazon Connect Widget",
-                components: [
-                  {
-                    type: "link",
-                    data: {
-                      value: "Call " + profile.name,
-                      url: "http://google.com",
-                      inline: false,
-                    },
-                  },
-                  {
-                    type: "customer",
-                  },
-                ],
-              })
-              .then(() => {
-                console.log("Section Updated 2");
-              });
           }
         });
         widget.on("customer_details_section_button_click", (button) => {
           console.log("Button with id", button, "clicked");
+          const agent = new connect.Agent();
+          try {
+            const state = agent.getState();
+            console.log("Current agent state", state, "duration", agent.getStateDuration());
+            if (agent.isSoftphoneEnabled()) { 
+              const endpoint = connect.Endpoint.byPhoneNumber("+27684626072");
+              const queueArn = "arn:aws:connect:af-south-1:858917309331:instance/b90b9e78-1775-4e3d-adeb-bd2f049b7031/queue/618c4d14-a1f7-4574-b627-509171376070";
+
+              agent.connect(endpoint, {
+                queueARN: queueArn,
+                success: function() { console.log("outbound call connected"); },
+                failure: function(err) {
+                  console.log("outbound call connection failed");
+                  console.log(err);
+                }
+              });
+             }
+          } catch (error) {}
         });
       });
 
