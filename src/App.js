@@ -93,11 +93,10 @@ function App() {
                 title: "Integrations data",
                 components: [
                   {
-                    type: "link",
+                    type: "button",
                     data: {
-                      value: "Call " + profile.name,
-                      url: "http://google.com",
-                      inline: false,
+                      label: "Call " + profile.name,
+                      id: "call-button"
                     },
                   },
                 ],
