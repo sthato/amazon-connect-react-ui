@@ -12,6 +12,7 @@ function App() {
 
   useEffect(() => {
     console.log("Mounted");
+    let widget, fWidget, mWidget;
 
     try {
       // eslint-disable-next-line no-undef
@@ -47,34 +48,28 @@ function App() {
         ccpSynTimeout: 3000, //optional, defaults to 1000 (ms)
         ccpLoadTimeout: 10000, //optional, defaults to 5000 (ms)
       });
+      console.log("Loading widget");
+
+      createDetailsWidget().then((w) => {
+        console.log("Loaded widget");
+        widget = w;
+        widget.on("customer_profile", onCustomerProfile);
+      });
+
+      createMessageBoxWidget.then((w) => {
+        console.log("Loaded MessageBoxWidget");
+        fWidget = w;
+        console.log(fWidget);
+      });
+
+      createFullscreenWidget.then((w) => {
+        console.log("Loaded FullscreenWidget");
+        mWidget = w;
+        console.log(mWidget);
+      });
     } catch (error) {
-      console.error(error);
+      console.error("AppError", error);
     }
-  }, []);
-
-  const onCustomerProfile = function (profile) {
-    console.log("Profile", profile);
-  };
-
-  useEffect(() => {
-    console.log("Loading widget");
-    let widget, fWidget, mWidget;
-    createDetailsWidget().then((w) => {
-      console.log("Loaded widget");
-      widget = w;
-      widget.on("customer_profile", onCustomerProfile);
-    });
-
-    createMessageBoxWidget.then((w) => {
-      console.log("Loaded MessageBoxWidget");
-      fWidget = w;
-    });
-
-    createFullscreenWidget.then((w) => {
-      console.log("Loaded FullscreenWidget");
-      mWidget = w;
-    });
-
     return () => {
       if (widget) {
         console.log("Cleanup widget");
@@ -82,6 +77,12 @@ function App() {
       }
     };
   }, []);
+
+  const onCustomerProfile = function (profile) {
+    console.log("Profile", profile);
+  };
+
+  useEffect(() => {}, []);
 
   return (
     <div className="App">
