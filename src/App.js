@@ -9,6 +9,7 @@ import "./App.css";
 
 function App() {
   const containerDiv = useRef();
+  let widgetRef;
 
   useEffect(() => {
     console.log("Mounted");
@@ -53,7 +54,11 @@ function App() {
       createDetailsWidget().then((w) => {
         console.log("Loaded widget");
         widget = w;
+        widgetRef = widget;
         widget.on("customer_profile", onCustomerProfile);
+        widget.on("customer_details_section_button_click", ({ buttonId }) => {
+          console.log("Button with id", buttonId, "clicked");
+        });
       });
 
       createMessageBoxWidget.then((w) => {
@@ -80,6 +85,28 @@ function App() {
 
   const onCustomerProfile = function (profile) {
     console.log("Profile", profile);
+    if (profile?.name == "Thato Shebe") {
+      widgetRef
+        .modifySection({
+          title: "Additional info",
+          components: [
+            {
+              "type": "link",
+              "data": {
+                "value": "Call " + profile.name,
+                "url": "http://google.com",
+                "inline": false
+              }
+            },
+            {
+              "type": "customer"
+            }
+          ],
+        })
+        .then(() => {
+          console.log("Section Updated")
+        });
+    }
   };
 
   useEffect(() => {}, []);
