@@ -4,12 +4,12 @@ import {
   createMessageBoxWidget,
   createFullscreenWidget,
 } from "@livechat/agent-app-sdk";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import "./App.css";
 
 function App() {
   const containerDiv = useRef();
-  let widgetRef;
+  const [widgetRef, setWidgetRef] = useState(null);
 
   useEffect(() => {
     console.log("Mounted");
@@ -54,7 +54,7 @@ function App() {
       createDetailsWidget().then((w) => {
         console.log("Loaded widget");
         widget = w;
-        widgetRef = widget;
+        setWidgetRef(widget);
         widget.on("customer_profile", onCustomerProfile);
         widget.on("customer_details_section_button_click", ({ buttonId }) => {
           console.log("Button with id", buttonId, "clicked");
@@ -85,7 +85,7 @@ function App() {
 
   const onCustomerProfile = function (profile) {
     console.log("Profile", profile);
-    if (profile?.name == "Thato Shebe") {
+    if (profile?.name === "Thato Shebe" && widgetRef) {
       widgetRef
         .modifySection({
           title: "Additional info",
