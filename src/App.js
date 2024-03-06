@@ -53,32 +53,56 @@ function App() {
       createDetailsWidget().then((w) => {
         console.log("Loaded widget");
         widget = w;
-        widget.on("customer_profile", (profile)=>{
+        widget.on("customer_profile", (profile) => {
           if (profile?.name === "Thato Shebe") {
+            
+            widget.putMessage("this text will be appended").then(() => {
+              return "YoYo"
+            });
+
+            console.log("Modifying Section")
             widget
               .modifySection({
-                title: "Additional info",
+                title: "Integrations data",
                 components: [
                   {
-                    "type": "link",
-                    "data": {
-                      "value": "Call " + profile.name,
-                      "url": "http://google.com",
-                      "inline": false
-                    }
+                    type: "link",
+                    data: {
+                      value: "Call " + profile.name,
+                      url: "http://google.com",
+                      inline: false,
+                    },
                   },
-                  {
-                    "type": "customer"
-                  }
                 ],
               })
               .then(() => {
-                console.log("Section Updated")
+                console.log("Section Updated");
+              });
+
+              widget
+              .modifySection({
+                title: "Amazon Connect Widget",
+                components: [
+                  {
+                    type: "link",
+                    data: {
+                      value: "Call " + profile.name,
+                      url: "http://google.com",
+                      inline: false,
+                    },
+                  },
+                  {
+                    type: "customer",
+                  },
+                ],
+              })
+              .then(() => {
+                console.log("Section Updated 2");
               });
           }
         });
-        widget.on("customer_details_section_button_click", ({ buttonId }) => {
-          console.log("Button with id", buttonId, "clicked");
+        widget.on("customer_details_section_button_click", (button) => {
+          console.log("Button with id", button, "clicked");
         });
       });
 
@@ -106,7 +130,6 @@ function App() {
 
   const onCustomerProfile = function (profile) {
     console.log("Profile", profile);
-    
   };
 
   useEffect(() => {}, []);
