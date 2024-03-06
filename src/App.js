@@ -49,37 +49,34 @@ function App() {
         ccpLoadTimeout: 10000, //optional, defaults to 5000 (ms)
       });
 
+      // eslint-disable-next-line no-undef
       connect.core.onAuthFail(function () {
         console.log("agent logged out or session expired.  needs login");
       });
 
+      // eslint-disable-next-line no-undef
       connect.core.onIframeRetriesExhausted(() => {
         console.log("We have run out of retries to reload the CCP Iframe");
       });
 
+      // eslint-disable-next-line no-undef
       connect.core.onAuthorizeSuccess(() => {
         console.log("authorization succeeded! Hooray");
       });
 
+      // eslint-disable-next-line no-undef
       connect.core.onCTIAuthorizeRetriesExhausted(() => {
         console.log(
           "We have failed CTI API authorization multiple times and we are out of retries"
         );
       });
 
+      // eslint-disable-next-line no-undef
       connect.core.onAuthorizeRetriesExhausted(() => {
         console.log(
           "We have failed the agent authorization api multiple times and we are out of retries"
         );
       });
-
-      // connect.agent.onStateChange(function (agentStateChange) {
-      //   console.log("agent state changed", agentStateChange);
-      // });
-
-      // connect.agent.onError(function (agent) {
-      //   console.log("Agent error", agent);
-      // });
 
       console.log("Loading widget");
 
@@ -113,11 +110,13 @@ function App() {
         });
         widget.on("customer_details_section_button_click", (button) => {
           console.log("Button with id", button, "clicked");
+          // eslint-disable-next-line no-undef
           const agent = new connect.Agent();
           try {
             const state = agent.getState();
             console.log("Current agent state", state, "duration", agent.getStateDuration());
             if (agent.isSoftphoneEnabled()) { 
+              // eslint-disable-next-line no-undef
               const endpoint = connect.Endpoint.byPhoneNumber("+27684626072");
               const queueArn = "arn:aws:connect:af-south-1:858917309331:instance/b90b9e78-1775-4e3d-adeb-bd2f049b7031/queue/618c4d14-a1f7-4574-b627-509171376070";
 
