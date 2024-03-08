@@ -120,7 +120,7 @@ function App() {
                   "arn:aws:connect:af-south-1:858917309331:instance/b90b9e78-1775-4e3d-adeb-bd2f049b7031/queue/618c4d14-a1f7-4574-b627-509171376070";
 
                 agent.connect(endpoint, {
-                  queueARN: queueArn,
+                  // queueARN: queueArn,
                   success: function () {
                     console.log("outbound call connected");
                     widget
@@ -163,6 +163,7 @@ function App() {
             console.log("contacts", contacts)
             console.log("Countries", agent.getDialableCountries());
             console.log("QueueARns",  agent.getAllQueueARNs());
+            console.log("PErmissions", agent.getPermissions());
             // const contactId = contacts[0].getContactId();
             contacts[0].clear({
               success: function(){console.log("Contact cleared")},
@@ -189,7 +190,7 @@ function App() {
                       });
           }
         else if(buttonId === "unmute-button"){
-          agent.mute();
+          agent.unmute();
           widget
                     .modifySection({
                       title: "Connect Actions",
