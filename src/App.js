@@ -164,7 +164,7 @@ function App() {
             console.log("Countries", agent.getDialableCountries());
             console.log("QueueARns",  agent.getAllQueueARNs());
             console.log("PErmissions", agent.getPermissions());
-            vonsole.log("States", agent.getAgentStates())
+            console.log("States", agent.getAgentStates())
             // const contactId = contacts[0].getContactId();
             contacts[0].clear({
               success: function(){console.log("Contact cleared")},
