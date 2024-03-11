@@ -7,19 +7,8 @@ import {
 import { useEffect, useRef } from "react";
 import "./App.css";
 
-const getWindowDimensions = function () {
-  const { innerWidth: width, innerHeight: height } = window;
-  return {
-    width,
-    height,
-  };
-};
-
 function App() {
   const containerDiv = useRef();
-  const [windowDimensions, setWindowDimensions] = useState(getWindowDimensions());
-
-  
 
   const showCallActions = function (profile) {
     widget
@@ -55,7 +44,7 @@ function App() {
           "arn:aws:connect:af-south-1:858917309331:instance/b90b9e78-1775-4e3d-adeb-bd2f049b7031/queue/618c4d14-a1f7-4574-b627-509171376070";
 
         agent.connect(endpoint, {
-          // queueARN: queueArn,
+          queueARN: queueArn,
           success: function () {
             console.log("outbound call connected");
             widget
@@ -269,6 +258,7 @@ function App() {
     };
   }, []);
 
+
   const onCustomerProfile = function (profile) {
     console.log("Profile", profile);
   };
@@ -279,7 +269,7 @@ function App() {
         id="container-div"
         ref={containerDiv}
         style={{
-          width: windowDimensions.width > 1600 ? "400px" : "350px",
+          width: window.innerWidth > 1600 ? "400px" : "350px",
           height: "600px",
         }}
       ></div>
