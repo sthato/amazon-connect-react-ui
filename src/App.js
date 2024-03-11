@@ -7,9 +7,155 @@ import {
 import { useEffect, useRef } from "react";
 import "./App.css";
 
+const getWindowDimensions = function () {
+  const { innerWidth: width, innerHeight: height } = window;
+  return {
+    width,
+    height,
+  };
+};
+
 function App() {
   const containerDiv = useRef();
+  const [windowDimensions, setWindowDimensions] = useState(getWindowDimensions());
 
+  
+
+  const showCallActions = function (profile) {
+    widget
+      .modifySection({
+        title: "Connect Actions",
+        components: [
+          {
+            type: "button",
+            data: {
+              label: "Call " + profile.name,
+              id: "call-button",
+            },
+          },
+        ],
+      })
+      .then(() => {
+        console.log("Section Updated");
+      });
+  };
+
+  const callButtonAction = (agent) => {
+    try {
+      const state = agent.getState();
+      console.log(
+        "Current agent state",
+        state,
+        "duration",
+        agent.getStateDuration()
+      );
+      if (agent.isSoftphoneEnabled()) {
+        const endpoint = connect.Endpoint.byPhoneNumber("+27684626072");
+        const queueArn =
+          "arn:aws:connect:af-south-1:858917309331:instance/b90b9e78-1775-4e3d-adeb-bd2f049b7031/queue/618c4d14-a1f7-4574-b627-509171376070";
+
+        agent.connect(endpoint, {
+          // queueARN: queueArn,
+          success: function () {
+            console.log("outbound call connected");
+            widget
+              .modifySection({
+                title: "Connect Actions",
+                components: [
+                  {
+                    type: "button",
+                    data: {
+                      label: "Mute call",
+                      id: "mute-button",
+                    },
+                  },
+                  {
+                    type: "button",
+                    data: {
+                      label: "End call",
+                      id: "end-button",
+                    },
+                  },
+                ],
+              })
+              .then(() => {
+                console.log("Section Updated");
+              });
+          },
+          failure: function (err) {
+            console.log("outbound call connection failed");
+            console.log(err);
+          },
+        });
+      }
+    } catch (error) {}
+  };
+
+  const endButtonAction = (agent) => {
+    const contacts = agent.getContacts();
+
+    console.log("contacts", contacts);
+    console.log("Countries", agent.getDialableCountries());
+    console.log("QueueARns", agent.getAllQueueARNs());
+    console.log("Permissions", agent.getPermissions());
+    console.log("States", agent.getAgentStates());
+
+    contacts[0].clear({
+      success: function () {
+        console.log("Contact cleared");
+      },
+      failure: () => {
+        console.error("Failed to clear contact");
+      },
+    });
+  };
+
+  const muteButtonAction = (agent) => {
+    agent.mute();
+    widget
+      .modifySection({
+        title: "Connect Actions",
+        components: [
+          {
+            type: "button",
+            data: {
+              label: "Unmute call",
+              id: "unmute-button",
+            },
+          },
+        ],
+      })
+      .then(() => {
+        console.log("Section Updated");
+      });
+  };
+
+  const unmuteButtonAction = (agent) => {
+    agent.unmute();
+    widget
+      .modifySection({
+        title: "Connect Actions",
+        components: [
+          {
+            type: "button",
+            data: {
+              label: "Mute call",
+              id: "mute-button",
+            },
+          },
+          {
+            type: "button",
+            data: {
+              label: "End call",
+              id: "end-button",
+            },
+          },
+        ],
+      })
+      .then(() => {
+        console.log("Section Updated");
+      });
+  };
   useEffect(() => {
     console.log("Mounted");
     let widget, fWidget, mWidget;
@@ -82,22 +228,7 @@ function App() {
 
           if (profile?.name === "Thato Shebe") {
             console.log("Modifying Section");
-            widget
-              .modifySection({
-                title: "Connect Actions",
-                components: [
-                  {
-                    type: "button",
-                    data: {
-                      label: "Call " + profile.name,
-                      id: "call-button",
-                    },
-                  },
-                ],
-              })
-              .then(() => {
-                console.log("Section Updated");
-              });
+            showCallActions(profile);
           }
         });
         widget.on("customer_details_section_button_click", ({ buttonId }) => {
@@ -105,114 +236,13 @@ function App() {
 
           const agent = new connect.Agent();
           if (buttonId === "call-button") {
-            try {
-              const state = agent.getState();
-              console.log(
-                "Current agent state",
-                state,
-                "duration",
-                agent.getStateDuration()
-              );
-              if (agent.isSoftphoneEnabled()) {
-                const endpoint = connect.Endpoint.byPhoneNumber("+27684626072");
-                const queueArn =
-                  "arn:aws:connect:af-south-1:858917309331:instance/b90b9e78-1775-4e3d-adeb-bd2f049b7031/queue/618c4d14-a1f7-4574-b627-509171376070";
-
-                agent.connect(endpoint, {
-                  // queueARN: queueArn,
-                  success: function () {
-                    console.log("outbound call connected");
-                    widget
-                      .modifySection({
-                        title: "Connect Actions",
-                        components: [
-                          {
-                            type: "button",
-                            data: {
-                              label: "Mute call",
-                              id: "mute-button",
-                            },
-                          },
-                          {
-                            type: "button",
-                            data: {
-                              label: "End call",
-                              id: "end-button",
-                            },
-                          },
-                        ],
-                      })
-                      .then(() => {
-                        console.log("Section Updated");
-                      });
-                  },
-                  failure: function (err) {
-                    console.log("outbound call connection failed");
-                    console.log(err);
-                  },
-                });
-              }
-            } catch (error) {}
+            callButtonAction(agent);
           } else if (buttonId === "end-button") {
-            const contacts = agent.getContacts();
-
-            console.log("contacts", contacts);
-            console.log("Countries", agent.getDialableCountries());
-            console.log("QueueARns", agent.getAllQueueARNs());
-            console.log("Permissions", agent.getPermissions());
-            console.log("States", agent.getAgentStates());
-
-            contacts[0].clear({
-              success: function () {
-                console.log("Contact cleared");
-              },
-              failure: () => {
-                console.error("Failed to clear contact");
-              },
-            });
+            endButtonAction(agent);
           } else if (buttonId === "mute-button") {
-            agent.mute();
-            widget
-              .modifySection({
-                title: "Connect Actions",
-                components: [
-                  {
-                    type: "button",
-                    data: {
-                      label: "Unmute call",
-                      id: "unmute-button",
-                    },
-                  },
-                ],
-              })
-              .then(() => {
-                console.log("Section Updated");
-              });
+            muteButtonAction(agent);
           } else if (buttonId === "unmute-button") {
-            agent.unmute();
-            widget
-              .modifySection({
-                title: "Connect Actions",
-                components: [
-                  {
-                    type: "button",
-                    data: {
-                      label: "Mute call",
-                      id: "mute-button",
-                    },
-                  },
-                  {
-                    type: "button",
-                    data: {
-                      label: "End call",
-                      id: "end-button",
-                    },
-                  },
-                ],
-              })
-              .then(() => {
-                console.log("Section Updated");
-              });
+            unmuteButtonAction(agent);
           }
         });
       });
@@ -249,7 +279,7 @@ function App() {
         id="container-div"
         ref={containerDiv}
         style={{
-          width: window.innerWidth > 1600 ? "400px" : "350px",
+          width: windowDimensions.width > 1600 ? "400px" : "350px",
           height: "600px",
         }}
       ></div>
